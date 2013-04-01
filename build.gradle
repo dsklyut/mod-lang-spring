@@ -43,15 +43,15 @@ install - install any jars produced to the local Maven repository (.m2)
  */
 
 dependencies {
-	
-   compile "org.springframework:spring-context:$springVersion"
+    compile "org.springframework:spring-context:$springVersion"
+    testCompile "org.mockito:mockito-core:$mockitoVersion"
 }
 
 test {
-  /* Configure which tests are included
-  include 'org/foo/**'
-  exclude 'org/boo/**'
-  */
+    /* Configure which tests are included
+    include 'org/foo/**'
+    exclude 'org/boo/**'
+    */
 
 }
 
@@ -59,35 +59,36 @@ test {
 If you're uploading stuff to Maven, Gradle needs to generate a POM.
 Please edit the details below.
  */
+
 def configurePom(def pom) {
-  pom.project {
-    description 'Vert.x Spring support module'
-    inceptionYear '2013'
-    packaging 'zip'
-    url 'Your project url'
+    pom.project {
+        description 'Vert.x Spring support module'
+        inceptionYear '2013'
+        packaging 'zip'
+        url 'Your project url'
 
-    developers {
-      developer {
-        id 'dsklyut'
-        name 'Dmitry Sklyut'
-        email 'dmitry at dsklyut dot com'
-      }
-    }
+        developers {
+            developer {
+                id 'dsklyut'
+                name 'Dmitry Sklyut'
+                email 'dmitry at dsklyut dot com'
+            }
+        }
 
-    scm {
-      url 'url to your repo - e.g. github repo url'
-    }
+        scm {
+            url 'url to your repo - e.g. github repo url'
+        }
 
-    licenses {
-      license {
-        name 'The Apache Software License, Version 2.0'
-        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-        distribution 'repo'
-      }
-    }
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
+            }
+        }
 
-    properties {
-      setProperty('project.build.sourceEncoding', 'UTF8')
+        properties {
+            setProperty('project.build.sourceEncoding', 'UTF8')
+        }
     }
-  }
 }
