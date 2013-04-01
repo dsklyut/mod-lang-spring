@@ -31,3 +31,7 @@ TODO:
 3. Support for JavaConfig based application context.
 4. Provide a repo for the module (right now must be built locally) -> ./gradlew clean install (will put it in the .m2 and available to be looked up by vert.x 2.0 repo resolvers).
 
+
+License:
+
+Eclipse Public License (http://www.eclipse.org/org/documents/epl-v10.php)
