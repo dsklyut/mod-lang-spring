@@ -30,13 +30,6 @@ public abstract class AbstractVertxApplicationContext
         setDisplayName("Root VertxApplicationContext");
     }
 
-    public AbstractVertxApplicationContext(Vertx vertxInternal, Container container) {
-        notNull(vertxInternal);
-        notNull(container);
-        this.vertx = vertxInternal;
-        this.container = container;
-    }
-
     @Override
     public void setVertx(Vertx vertx) {
         this.vertx = vertx;

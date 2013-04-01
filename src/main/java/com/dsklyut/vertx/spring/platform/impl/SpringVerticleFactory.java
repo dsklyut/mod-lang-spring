@@ -1,11 +1,17 @@
 package com.dsklyut.vertx.spring.platform.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.util.StringUtils;
 import org.vertx.java.core.Vertx;
+import org.vertx.java.core.impl.VertxInternal;
 import org.vertx.java.core.logging.Logger;
 import org.vertx.java.platform.Container;
 import org.vertx.java.platform.Verticle;
 import org.vertx.java.platform.VerticleFactory;
+import org.vertx.java.platform.impl.DefaultContainer;
+
+import static org.springframework.util.Assert.notNull;
 
 /**
  * User: dsklyut
@@ -15,6 +21,8 @@ import org.vertx.java.platform.VerticleFactory;
 @SuppressWarnings("unused")
 public class SpringVerticleFactory implements VerticleFactory {
 
+    private final static Log logger = LogFactory.getLog(SpringVerticleFactory.class);
+
     //todo: do we need this stuff?
     private Vertx vertx;
     private Container container;
@@ -22,6 +30,10 @@ public class SpringVerticleFactory implements VerticleFactory {
 
     @Override
     public void init(Vertx vertx, Container container, ClassLoader cl) {
+        logger.info("init of SpringVerticleFactory");
+        notNull(vertx, "vertx is null");
+        notNull(container, "container is null");
+        notNull(cl, "cl is null");
         this.vertx = vertx;
         this.container = container;
         this.moduleClassLoader = cl;
@@ -29,7 +41,7 @@ public class SpringVerticleFactory implements VerticleFactory {
 
     @Override
     public Verticle createVerticle(String main) throws Exception {
-        container.getLogger().info("Spring verticle factory - create for '" + main + "'");
+        logger.info("Spring verticle factory - create for '" + main + "'");
         // account for deployment in this format only for now:
         // resource-prefix:path-to-xml-file
         // todo: handle java-config based deployments.
@@ -43,7 +55,8 @@ public class SpringVerticleFactory implements VerticleFactory {
 
     @Override
     public void close() {
+        System.out.println("close of SpringVerticleFactory");
         // do nothing as there is nothing we can do
-        container.getLogger().info("Close called on SpringVerticleFactory");
+        logger.info("Close called on SpringVerticleFactory");
     }
 }

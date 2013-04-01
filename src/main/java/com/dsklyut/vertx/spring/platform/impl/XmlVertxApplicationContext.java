@@ -23,10 +23,6 @@ import java.io.IOException;
  */
 public class XmlVertxApplicationContext extends AbstractVertxApplicationContext {
 
-    public XmlVertxApplicationContext(VertxInternal vertxInternal, Container container) {
-        super(vertxInternal, container);
-    }
-
     @Override
     protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
         beanFactory.addBeanPostProcessor(new VertxAwareProcessor(getVertx(), getContainer()));

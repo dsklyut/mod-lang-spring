@@ -1,6 +1,7 @@
 package com.dsklyut.vertx.spring.platform.impl;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextException;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -28,7 +29,8 @@ import java.util.List;
 // todo: handle parent context - i.e. module deploying module and submodule using spring with parent delegation
 class SpringContextInitializer extends Verticle {
 
-    public static final String VERTX_CONTEXT_CLASS_CONFIG_PARAM = "contextClass";
+    public static final String ROOT_CONTEXT_KEY = "vertxRootApplicationContext";
+    public static final String CONTEXT_CLASS_PARAM = "contextClass";
     public static final String CONTEXT_INITIALIZER_CLASSES_PARAM = "contextInitializerClasses";
 
     private VertxApplicationContext context;
@@ -63,8 +65,19 @@ class SpringContextInitializer extends Verticle {
         if (this.context == null) {
             this.context = createContext(config);
         }
-        configureAndRefresh(context, config);
 
+        // TODO: have to figure out if "deployment" instance is a dag or not.
+        if (!this.context.isActive()) {
+            // The context has not yet been refreshed -> provide services such as
+            // setting the parent context, setting the application context id, etc
+            if (this.context.getParent() == null) {
+                // The context instance was injected without an explicit parent ->
+                // determine parent for vertx application context, if any.
+//                ApplicationContext parent = loadParentContext(config);
+//                this.context.setParent(parent);
+            }
+            configureAndRefresh(context, config);
+        }
 
         if (logger.isInfoEnabled()) {
             long elapsedTime = System.currentTimeMillis() - startTime;
@@ -103,7 +116,7 @@ class SpringContextInitializer extends Verticle {
     }
 
     protected Class<?> determineContextClass(JsonObject config) {
-        String contextClassName = config.getString(VERTX_CONTEXT_CLASS_CONFIG_PARAM);
+        String contextClassName = config.getString(CONTEXT_CLASS_PARAM);
         if (contextClassName != null) {
             try {
                 return ClassUtils.forName(contextClassName, ClassUtils.getDefaultClassLoader());
