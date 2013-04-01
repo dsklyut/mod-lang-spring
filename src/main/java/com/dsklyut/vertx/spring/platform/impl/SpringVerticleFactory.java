@@ -10,7 +10,6 @@ import org.vertx.java.platform.ExtendedVerticleFactory;
 import org.vertx.java.platform.Verticle;
 
 import static org.springframework.util.Assert.notNull;
-import static org.springframework.util.StringUtils.commaDelimitedListToStringArray;
 
 /**
  * User: dsklyut
@@ -48,7 +47,7 @@ public class SpringVerticleFactory implements ExtendedVerticleFactory {
     }
 
     // this is ain't enough as we should only create a single AppCntx in case of "instances > 1"
-    return new SpringContextInitializer(commaDelimitedListToStringArray(dpi.getMain()));
+    return new SpringContextInitializer(dpi);
   }
 
   @Override

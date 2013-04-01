@@ -15,9 +15,11 @@ import org.vertx.java.core.VoidResult;
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.core.logging.Logger;
+import org.vertx.java.platform.DeploymentInfo;
 import org.vertx.java.platform.Verticle;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * User: dsklyut
@@ -33,14 +35,16 @@ class SpringContextInitializer extends Verticle {
   public static final String CONTEXT_INITIALIZER_CLASSES_PARAM = "contextInitializerClasses";
 
   private VertxApplicationContext context;
+  private final DeploymentInfo deploymentInfo;
 
   /**
    * this could be xml files or classes...  (in the future - for now only xml)
    */
   private final String[] configLocations;
 
-  public SpringContextInitializer(String[] configLocations) {
-    this.configLocations = configLocations;
+  public SpringContextInitializer(DeploymentInfo deploymentInfo) {
+    this.deploymentInfo = deploymentInfo;
+    configLocations = StringUtils.commaDelimitedListToStringArray(deploymentInfo.getMain());
   }
 
   @Override
@@ -52,7 +56,6 @@ class SpringContextInitializer extends Verticle {
     // todo: do we need a way to specify appContext class?
     // todo: maybe get it from config "contextClass"
     final JsonObject config = getContainer().getConfig();
-
     final Logger logger = container.getLogger();
 
     logger.info("Initializing Spring VertxApplicationContext");
@@ -108,13 +111,13 @@ class SpringContextInitializer extends Verticle {
 
   //===========  internal
   protected VertxApplicationContext findOrCreateContext(JsonObject config) {
-    Map<String, VertxApplicationContext> data = vertx.sharedData().getMap(APP_CONTEXT_SD_KEY);
+    ConcurrentMap<String, VertxApplicationContext> data = vertx.sharedData().getMap(APP_CONTEXT_SD_KEY);
 
-    final String key = StringUtils.arrayToCommaDelimitedString(configLocations);
-    VertxApplicationContext context = data.get(StringUtils.arrayToCommaDelimitedString(configLocations));
+    final String key = deploymentInfo.getName();
+    VertxApplicationContext context = data.get(key);
     if (context == null) {
       context = createContext(config);
-      VertxApplicationContext prev = data.put(key, context);
+      VertxApplicationContext prev = data.putIfAbsent(key, context);
       if (prev != null) {
         container.getLogger().info("Found existing appContext for key '" + key + "'");
         context = prev;
@@ -250,22 +253,12 @@ class SpringContextInitializer extends Verticle {
   protected ApplicationContext findParentContext(JsonObject config) {
     VertxApplicationContext.UseParentContext opt =
         VertxApplicationContext.UseParentContext.valueOf(config.getString("useParentContext", DEFAULT_USE_PARENT_CONTEXT_OPTION).toUpperCase());
+    ConcurrentMap<String, VertxApplicationContext> data = vertx.sharedData().getMap(APP_CONTEXT_SD_KEY);
+    String key = opt.getKey(this.deploymentInfo);
 
-    switch (opt) {
-      case ROOT:
-        return findRootParentContext(config);
-      case PARENT:
-        return findParentParentContext(config);
-      default:
-        return null;
+    if (StringUtils.hasText(key)) {
+      return data.get(key);
     }
-  }
-
-  private ApplicationContext findRootParentContext(JsonObject config) {
-    throw new UnsupportedOperationException("not yet implemented");
-  }
-
-  private ApplicationContext findParentParentContext(JsonObject config) {
-    throw new UnsupportedOperationException("not yet implemented");
+    return null;
   }
 }

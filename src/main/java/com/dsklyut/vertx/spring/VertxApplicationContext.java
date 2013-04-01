@@ -3,6 +3,7 @@ package com.dsklyut.vertx.spring;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.vertx.java.core.Vertx;
 import org.vertx.java.platform.Container;
+import org.vertx.java.platform.DeploymentInfo;
 
 /**
  * User: dsklyut
@@ -12,7 +13,24 @@ import org.vertx.java.platform.Container;
 public interface VertxApplicationContext extends ConfigurableApplicationContext {
 
   public enum UseParentContext {
-    NONE, PARENT, ROOT
+    NONE {
+      @Override
+      public String getKey(DeploymentInfo deploymentInfo) {
+        return null;
+      }
+    }, PARENT {
+      @Override
+      public String getKey(DeploymentInfo deploymentInfo) {
+        return deploymentInfo.getParentDeploymentName();
+      }
+    }, ROOT {
+      @Override
+      public String getKey(DeploymentInfo deploymentInfo) {
+        return deploymentInfo.getRootDeploymentName();
+      }
+    };
+
+    public abstract String getKey(DeploymentInfo deploymentInfo);
   }
 
   String VERTX_BEAN_NAME = "vertx".intern();
