@@ -2,14 +2,12 @@ package com.dsklyut.vertx.spring.support;
 
 import com.dsklyut.vertx.spring.ContainerAware;
 import com.dsklyut.vertx.spring.VertxAware;
-import org.vertx.java.core.Vertx;
 import org.vertx.java.core.VoidResult;
-import org.vertx.java.platform.Container;
 import org.vertx.java.platform.Verticle;
 
 /**
  * Decorator class to wrap standard java classes in a verticle.
- *
+ * <p/>
  * todo: not finished yet
  * <p/>
  * User: dsklyut
@@ -18,32 +16,32 @@ import org.vertx.java.platform.Verticle;
  */
 public abstract class VerticleAdapter extends Verticle implements ContainerAware, VertxAware {
 
-    @Override
-    public final void start() throws Exception {
-        super.start();
-        onStart();
-    }
+  @Override
+  public final void start() throws Exception {
+    super.start();
+    onStart();
+  }
 
-    @Override
-    public final void start(VoidResult startedResult) throws Exception {
-        try {
-            onStart();
-        } catch (Exception ex) {
-            startedResult.setFailure(ex);
-        }
-        if (!startedResult.failed()) {
-            startedResult.setResult();
-        }
+  @Override
+  public final void start(VoidResult startedResult) throws Exception {
+    try {
+      onStart();
+    } catch (Exception ex) {
+      startedResult.setFailure(ex);
     }
-
-    @Override
-    public final void stop() throws Exception {
-        onStop();
+    if (!startedResult.failed()) {
+      startedResult.setResult();
     }
+  }
 
-    protected abstract void onStart() throws Exception;
+  @Override
+  public final void stop() throws Exception {
+    onStop();
+  }
 
-    protected void onStop() throws Exception {
-        // do nothing - give subclasses and extension point.
-    }
+  protected abstract void onStart() throws Exception;
+
+  protected void onStop() throws Exception {
+    // do nothing - give subclasses and extension point.
+  }
 }

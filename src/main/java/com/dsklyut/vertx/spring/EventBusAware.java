@@ -9,5 +9,5 @@ import org.vertx.java.core.eventbus.EventBus;
  */
 public interface EventBusAware {
 
-    void setEventBus(EventBus eventBus);
+  void setEventBus(EventBus eventBus);
 }

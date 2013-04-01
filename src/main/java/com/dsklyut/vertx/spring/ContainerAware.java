@@ -9,5 +9,5 @@ import org.vertx.java.platform.Container;
  */
 public interface ContainerAware {
 
-    void setContainer(Container container);
+  void setContainer(Container container);
 }

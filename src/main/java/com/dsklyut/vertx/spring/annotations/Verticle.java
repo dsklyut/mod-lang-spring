@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 public @interface Verticle {
 
-    boolean worker() default false;
+  boolean worker() default false;
 
-    boolean multiThreaded() default false;
+  boolean multiThreaded() default false;
 }

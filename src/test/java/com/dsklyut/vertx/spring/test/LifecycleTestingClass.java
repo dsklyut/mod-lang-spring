@@ -20,53 +20,53 @@ import static org.springframework.util.Assert.notNull;
 public class LifecycleTestingClass implements VertxAware, ContainerAware, EventBusAware, ConfigAware, InitializingBean {
 
 
-    private JsonObject config;
-    private Container container;
-    private EventBus eb;
-    private Vertx vertx;
+  private JsonObject config;
+  private Container container;
+  private EventBus eb;
+  private Vertx vertx;
 
 
-    @Override
-    public void setConfig(JsonObject config) {
-        this.config = config;
-    }
+  @Override
+  public void setConfig(JsonObject config) {
+    this.config = config;
+  }
 
-    @Override
-    public void setContainer(Container container) {
-        this.container = container;
-    }
+  @Override
+  public void setContainer(Container container) {
+    this.container = container;
+  }
 
-    @Override
-    public void setEventBus(EventBus eventBus) {
-        this.eb = eventBus;
-    }
+  @Override
+  public void setEventBus(EventBus eventBus) {
+    this.eb = eventBus;
+  }
 
-    @Override
-    public void setVertx(Vertx vertx) {
-        this.vertx = vertx;
-    }
+  @Override
+  public void setVertx(Vertx vertx) {
+    this.vertx = vertx;
+  }
 
-    public JsonObject getConfig() {
-        return config;
-    }
+  public JsonObject getConfig() {
+    return config;
+  }
 
-    public Container getContainer() {
-        return container;
-    }
+  public Container getContainer() {
+    return container;
+  }
 
-    public EventBus getEb() {
-        return eb;
-    }
+  public EventBus getEb() {
+    return eb;
+  }
 
-    public Vertx getVertx() {
-        return vertx;
-    }
+  public Vertx getVertx() {
+    return vertx;
+  }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        notNull(config, "Config is null");
-        notNull(container, "Container is null");
-        notNull(vertx, "Vertx is null");
-        notNull(eb, "EventBus is null");
-    }
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    notNull(config, "Config is null");
+    notNull(container, "Container is null");
+    notNull(vertx, "Vertx is null");
+    notNull(eb, "EventBus is null");
+  }
 }

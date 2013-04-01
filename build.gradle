@@ -43,8 +43,15 @@ install - install any jars produced to the local Maven repository (.m2)
  */
 
 dependencies {
-    compile "org.springframework:spring-context:$springVersion"
+    compile ("org.springframework:spring-context:$springVersion") {
+        exclude group: 'commons-logging'
+    }
+    // slf4j-api is transient
+    compile ("org.slf4j:jcl-over-slf4j:$slf4jVersion")
+
     testCompile "org.mockito:mockito-core:$mockitoVersion"
+    testRuntime ("ch.qos.logback:logback-classic:$logbackVersion")
+
 }
 
 test {

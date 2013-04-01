@@ -9,5 +9,5 @@ import org.vertx.java.core.json.JsonObject;
  */
 public interface ConfigAware {
 
-    void setConfig(JsonObject config);
+  void setConfig(JsonObject config);
 }

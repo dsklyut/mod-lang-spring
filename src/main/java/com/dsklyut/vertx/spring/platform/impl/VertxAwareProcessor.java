@@ -17,37 +17,37 @@ import static org.springframework.util.Assert.notNull;
  * Time: 12:33 PM
  */
 public class VertxAwareProcessor implements BeanPostProcessor {
-    private final Vertx vertx;
-    private final Container container;
+  private final Vertx vertx;
+  private final Container container;
 
-    public VertxAwareProcessor(Vertx vertx, Container container) {
-        notNull(vertx);
-        notNull(container);
-        this.vertx = vertx;
-        this.container = container;
+  public VertxAwareProcessor(Vertx vertx, Container container) {
+    notNull(vertx);
+    notNull(container);
+    this.vertx = vertx;
+    this.container = container;
+  }
+
+  @Override
+  public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+
+    if (bean instanceof VertxAware) {
+      ((VertxAware) bean).setVertx(this.vertx);
+    }
+    if (bean instanceof ContainerAware) {
+      ((ContainerAware) bean).setContainer(this.container);
+    }
+    if (bean instanceof ConfigAware && this.container.getConfig() != null) {
+      ((ConfigAware) bean).setConfig(this.container.getConfig());
+    }
+    if (bean instanceof EventBusAware) {
+      ((EventBusAware) bean).setEventBus(this.vertx.eventBus());
     }
 
-    @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    return bean;
+  }
 
-        if (bean instanceof VertxAware) {
-            ((VertxAware) bean).setVertx(this.vertx);
-        }
-        if (bean instanceof ContainerAware) {
-            ((ContainerAware) bean).setContainer(this.container);
-        }
-        if (bean instanceof ConfigAware && this.container.getConfig() != null) {
-            ((ConfigAware) bean).setConfig(this.container.getConfig());
-        }
-        if (bean instanceof EventBusAware) {
-            ((EventBusAware) bean).setEventBus(this.vertx.eventBus());
-        }
-
-        return bean;
-    }
-
-    @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        return bean;
-    }
+  @Override
+  public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    return bean;
+  }
 }

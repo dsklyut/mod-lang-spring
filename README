@@ -15,6 +15,16 @@ Some lifecycle interfaces are also provided:
 3. EventBusAware
 4. ConfigAware
 
+Config options supported:
+1. contextClass => (String) a custom implementation of com.dsklyut.vertx.spring.VertxApplicationContext
+2. contextInitializerClasses => (comma delimited String or JsonArray) implementation of org.springframework.context.ApplicationContextInitializer
+3. useParentContext => (String) enum of (case insensitive)
+  3.1 ROOT i.e. context of the module that started the deployment chain (TODO)
+  3.2 PARENT i.e. context of the immediate parent module (TODO)
+  3.3. NONE i.e. do not use parent app context at all
+
+In case of multiple instances of the same verticle -> i.e. instances > 1 -> Only 1 (one) context is created and shared with all of the instances
+
 Pre-req: Vert.x 2.0
 Config:
 1. update ${vertx.home}/conf/langs.properties
@@ -23,7 +33,7 @@ Config:
 Running:
 1. Simple xml config
   ./bin/vertx run spring:file:/Users/dsklyut/Projects/sources/vert.x/mod-lang-spring/src/test/resources/contexts/test-config-1.xml
-2. For mods - speicify a path to the xml config in the mod.json "main" attribute.
+2. For mods - specify a path to the xml config in the mod.json "main" attribute.
 
 TODO:
 1. Support for "parent context sharing" - still need to get a better handle on Vert.x deployment.  Might need an ExtendedVerticleFactory that provides an API to recieve a Deployment instance vs. just main
