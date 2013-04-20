@@ -37,8 +37,8 @@ public final class VertxApplicationContextUtils {
             bf.registerSingleton(VertxApplicationContext.VERTX_EVENT_BUS_BEAN_NAME, vertx.eventBus());
         }
 
-        if (container != null && container.getConfig() != null && !bf.containsBean(VertxApplicationContext.VERTX_MODULE_CONFIG_BEAN_NAME)) {
-            bf.registerSingleton(VertxApplicationContext.VERTX_MODULE_CONFIG_BEAN_NAME, container.getConfig());
+        if (container != null && container.config() != null && !bf.containsBean(VertxApplicationContext.VERTX_MODULE_CONFIG_BEAN_NAME)) {
+            bf.registerSingleton(VertxApplicationContext.VERTX_MODULE_CONFIG_BEAN_NAME, container.config());
         }
     }
 }
