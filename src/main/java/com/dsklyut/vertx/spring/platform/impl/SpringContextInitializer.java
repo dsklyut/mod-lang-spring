@@ -1,7 +1,6 @@
 package com.dsklyut.vertx.spring.platform.impl;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextException;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -10,7 +9,7 @@ import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
-import org.vertx.java.core.VoidResult;
+import org.vertx.java.core.Future;
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.core.logging.Logger;
@@ -45,16 +44,16 @@ class SpringContextInitializer extends Verticle {
     }
 
     @Override
-    public void start() throws Exception {
+    public void start() {
         onStart();
     }
 
-    private void onStart() throws Exception {
+    private void onStart() {
         // todo: do we need a way to specify appContext class?
         // todo: maybe get it from config "contextClass"
-        final JsonObject config = getContainer().getConfig();
+        final JsonObject config = getContainer().config();
 
-        final Logger logger = container.getLogger();
+        final Logger logger = container.logger();
 
         logger.info("Initializing Spring VertxApplicationContext");
         if (logger.isInfoEnabled()) {
@@ -62,15 +61,15 @@ class SpringContextInitializer extends Verticle {
         }
         long startTime = System.currentTimeMillis();
 
-        if (this.context == null) {
-            this.context = createContext(config);
+        if (context == null) {
+            context = createContext(config);
         }
 
         // TODO: have to figure out if "deployment" instance is a dag or not.
-        if (!this.context.isActive()) {
+        if (!context.isActive()) {
             // The context has not yet been refreshed -> provide services such as
             // setting the parent context, setting the application context id, etc
-            if (this.context.getParent() == null) {
+            if (context.getParent() == null) {
                 // The context instance was injected without an explicit parent ->
                 // determine parent for vertx application context, if any.
 //                ApplicationContext parent = loadParentContext(config);
@@ -86,19 +85,19 @@ class SpringContextInitializer extends Verticle {
     }
 
     @Override
-    public void start(VoidResult startedResult) throws Exception {
+    public void start(Future<Void> startedResult) {
         try {
             onStart();
         } catch (Exception ex) {
             startedResult.setFailure(ex);
         }
         if (!startedResult.failed()) {
-            startedResult.setResult();
+            startedResult.setResult(null);
         }
     }
 
     @Override
-    public void stop() throws Exception {
+    public void stop() {
         if (context != null) {
             context.close();
         }

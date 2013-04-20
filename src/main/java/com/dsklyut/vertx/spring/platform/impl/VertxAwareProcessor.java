@@ -36,8 +36,8 @@ public class VertxAwareProcessor implements BeanPostProcessor {
         if (bean instanceof ContainerAware) {
             ((ContainerAware) bean).setContainer(this.container);
         }
-        if (bean instanceof ConfigAware && this.container.getConfig() != null) {
-            ((ConfigAware) bean).setConfig(this.container.getConfig());
+        if (bean instanceof ConfigAware && this.container.config() != null) {
+            ((ConfigAware) bean).setConfig(this.container.config());
         }
         if (bean instanceof EventBusAware) {
             ((EventBusAware) bean).setEventBus(this.vertx.eventBus());
