@@ -24,10 +24,10 @@ public class TestXmlVertxApplicationContext {
     public void validateLoadingOfSimpleContext() {
         JsonObject config = new JsonObject();
         PlatformManager pm = PlatformLocator.factory.createPlatformManager();
-        Vertx vertx = pm.getVertx();
+        Vertx vertx = pm.vertx();
         // there is no cntr that we can safely use (package private) so just mock for this test
         Container mockContainer = Mockito.mock(Container.class);
-        when(mockContainer.getConfig()).thenReturn(config);
+        when(mockContainer.config()).thenReturn(config);
 
         VertxApplicationContext cntx = new XmlVertxApplicationContext();
         cntx.setVertx(vertx);
