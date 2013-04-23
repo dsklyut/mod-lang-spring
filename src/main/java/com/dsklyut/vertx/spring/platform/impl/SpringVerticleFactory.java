@@ -29,14 +29,14 @@ public class SpringVerticleFactory implements VerticleFactory {
     private ClassLoader moduleClassLoader;
 
     @Override
-    public void init(Vertx vertx, Container container, ClassLoader cl) {
+    public void init(Vertx vertx, Container container, ClassLoader moduleClassLoader) {
         logger.info("init of SpringVerticleFactory");
         notNull(vertx, "vertx is null");
         notNull(container, "container is null");
-        notNull(cl, "cl is null");
+        notNull(moduleClassLoader, "moduleClassLoader is null");
         this.vertx = vertx;
         this.container = container;
-        this.moduleClassLoader = cl;
+        this.moduleClassLoader = moduleClassLoader;
     }
 
     @Override
@@ -45,7 +45,11 @@ public class SpringVerticleFactory implements VerticleFactory {
         // account for deployment in this format only for now:
         // resource-prefix:path-to-xml-file
         // todo: handle java-config based deployments.
-        return new SpringContextInitializer(StringUtils.commaDelimitedListToStringArray(main));
+        SpringContextInitializer springContextInitializer = new SpringContextInitializer(
+                StringUtils.commaDelimitedListToStringArray(main));
+        springContextInitializer.setVertx(vertx);
+        springContextInitializer.setContainer(container);
+        return springContextInitializer;
     }
 
     @Override
